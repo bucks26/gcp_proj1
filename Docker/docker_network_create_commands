@@ -1,0 +1,25 @@
+docker network create pg-network
+
+# output of: docker network create pg-network
+## 84bb524aca0025c3d88f2f52cc3072e1c0a8177053ce82e32318aebec0918ce8
+
+# create a way for pgadmin & postgresql containers to communicate with each other
+## above command uses 'docker network create' followed the naem you want to use for your network (pg-network)
+
+# we also need to add the network we just created (pg-network) to the docker run command for our postgresql container
+## we are basically creating an updated container for postgresql by adding the network we created as well as a name that pgadmin
+## will reference in order to connect
+
+docker run -it \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
+  -p 5432:5432 \
+  --network=pg-network \
+  --name pg-database \
+  postgres:13
+
+  # the name specified on line 15 is how pgadmin container will be able to discover postgresql container
+  ## i assume '--name pg-database' is the name for the postgresql container?
+

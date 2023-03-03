@@ -1,0 +1,29 @@
+services:
+    postgres:
+        image: postgres:13
+            environment:
+                docker run -it \
+                # -e below are each of the environment variables that we need to set up for our postgres env being used via docker image
+                # use -e flag for env variables when using 'docker run' command
+                -e POSTGRES_USER="root" \
+                -e POSTGRES_PASSWORD="root" \
+                -e POSTGRES_DB="ny_taxi" \
+            volumes:
+                # -v is the volumes variable: a way of mapping the file systyem on our host machine to a folder in the container
+                # if you do not map using 'volumes' (a folder path from your local) then the data will be lost next time you run
+                ## the docker container. -v with file path ensures the data persists when you run/stop the docker container
+                ## the above process is called MOUNTING
+                -v ny_tax_postgres_data:/var/lib/postgresql/data \
+                # -p specifies the mapping of the data/port from your local machine to the postgres instance in docker
+                ## so you can send requests, etc. to docker from your local and vice versa
+                ## first number is port on local, second is port on docker instance (local_port:docker_port)
+                -p 5432:5432
+                postgres:13
+                
+docker run -it \
+  -e POSTGRES_USER="root" \
+  -e POSTGRES_PASSWORD="root" \
+  -e POSTGRES_DB="ny_taxi" \
+  -v $(pwd)/ny_taxi_postgres_data:/var/lib/postgresql/data \
+  -p 5432:5432 \
+  postgres:13
